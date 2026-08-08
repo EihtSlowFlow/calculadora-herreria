@@ -1,6 +1,6 @@
 # Calculadora de Herrería — Inventario y Cortes
 
-Aplicación de escritorio para Windows que permite gestionar materiales de herrería, calcular el aprovechamiento de barras y perfiles, y planificar cortes optimizados.
+Aplicación de escritorio multiplataforma (Windows y Linux) que permite gestionar materiales de herrería, calcular el aprovechamiento de barras y perfiles, y planificar cortes optimizados.
 
 ## Características del prototipo
 
@@ -16,7 +16,7 @@ Aplicación de escritorio para Windows que permite gestionar materiales de herre
 ## Tecnología
 
 - C# / .NET 8
-- WPF (Windows Presentation Foundation)
+- Avalonia UI (Framework multiplataforma)
 - SQLite (vía Entity Framework Core)
 - Patrón MVVM (CommunityToolkit.Mvvm)
 
@@ -27,10 +27,11 @@ calculadora-herreria/
 ├── src/
 │   ├── CalculadoraHerreria.Core/      # Librería compartida (net8.0)
 │   │   ├── Models/                    # Entidades del dominio
-│   │   └── Data/                      # DbContext, seeder, acceso a datos
-│   └── CalculadoraHerreria/           # Proyecto WPF (net8.0-windows)
+│   │   ├── Data/                      # DbContext, seeder, acceso a datos
+│   │   └── Data/Migrations/           # Migraciones de EF Core
+│   └── CalculadoraHerreria/           # Proyecto Avalonia UI (net8.0)
 │       ├── ViewModels/                # Lógica de presentación (MVVM)
-│       ├── Views/                     # Ventanas y controles XAML
+│       ├── Views/                     # Ventanas y controles XAML (axaml)
 │       └── Services/                  # Lógica de negocio y cálculos
 ├── tests/
 │   └── CalculadoraHerreria.Tests/     # Tests unitarios (xUnit)
@@ -42,7 +43,7 @@ calculadora-herreria/
 ## Requisitos
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (para desarrollo)
-- Windows 10/11 (para ejecutar la aplicación WPF)
+- Windows 10/11 o Linux (Kubuntu, Ubuntu, etc.)
 
 ## Compilar y ejecutar
 
@@ -53,16 +54,23 @@ dotnet restore
 # Compilar
 dotnet build
 
-# Ejecutar (requiere Windows)
+# Ejecutar tests
+dotnet test
+
+# Ejecutar aplicación
 dotnet run --project src/CalculadoraHerreria
 
-# Ejecutar tests (funciona en cualquier OS)
-dotnet test
+# Publicar (ejemplo para Windows x64 autocontenido)
+dotnet publish src/CalculadoraHerreria -c Release -r win-x64 --self-contained true
 ```
 
 ## Base de datos
 
-La base de datos SQLite (`calculadora_herreria.db`) se crea automáticamente junto al ejecutable en el primer inicio. Incluye datos de ejemplo para facilitar la validación.
+La base de datos SQLite (`calculadora_herreria.db`) se ubica en la carpeta de datos de usuario de la plataforma:
+- **Windows**: `%LOCALAPPDATA%\CalculadoraHerreria\`
+- **Linux**: `~/.local/share/CalculadoraHerreria/`
+
+Se crean las tablas automáticamente al iniciar gracias a Entity Framework Core Migrations.
 
 ### Tablas
 

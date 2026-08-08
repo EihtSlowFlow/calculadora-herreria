@@ -17,14 +17,21 @@ public class AppDbContext : DbContext
 
     /// <summary>
     /// Ruta de la base de datos SQLite.
-    /// Se ubica junto al ejecutable de la aplicación.
+    /// Se ubica en la carpeta de datos local del usuario (%LOCALAPPDATA% en Windows, ~/.local/share en Linux).
     /// </summary>
     private static string DbPath
     {
         get
         {
-            var folder = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(folder, "calculadora_herreria.db");
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appFolder = Path.Combine(folder, "CalculadoraHerreria");
+            
+            if (!Directory.Exists(appFolder))
+            {
+                Directory.CreateDirectory(appFolder);
+            }
+            
+            return Path.Combine(appFolder, "calculadora_herreria.db");
         }
     }
 

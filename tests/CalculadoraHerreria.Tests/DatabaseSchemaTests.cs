@@ -1,6 +1,7 @@
 using CalculadoraHerreria.Data;
 using CalculadoraHerreria.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace CalculadoraHerreria.Tests;
@@ -12,16 +13,20 @@ namespace CalculadoraHerreria.Tests;
 public class DatabaseSchemaTests : IDisposable
 {
     private readonly AppDbContext _context;
+    private readonly SqliteConnection _connection;
 
     public DatabaseSchemaTests()
     {
-        // Usar base de datos en memoria para los tests
+        // Usar base de datos SQLite en memoria para los tests con una conexión persistente
+        _connection = new SqliteConnection("Data Source=:memory:");
+        _connection.Open();
+
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseSqlite(_connection)
             .Options;
 
         _context = new AppDbContext(options);
-        _context.Database.EnsureCreated();
+        _context.Database.Migrate();
     }
 
     [Fact]
@@ -155,7 +160,7 @@ public class DatabaseSchemaTests : IDisposable
     [Fact]
     public void SeederCargaDatosDeEjemplo()
     {
-        DatabaseSeeder.Seed(_context);
+        DatabaseSeeder.Seed(_context, seedDemoData: true);
 
         Assert.Equal(6, _context.Materiales.Count());
         Assert.Equal(9, _context.Configuraciones.Count());
@@ -166,8 +171,8 @@ public class DatabaseSchemaTests : IDisposable
     [Fact]
     public void SeederNoInsertaDuplicados()
     {
-        DatabaseSeeder.Seed(_context);
-        DatabaseSeeder.Seed(_context); // Segunda ejecución
+        DatabaseSeeder.Seed(_context, seedDemoData: true);
+        DatabaseSeeder.Seed(_context, seedDemoData: true); // Segunda ejecución
 
         Assert.Equal(6, _context.Materiales.Count()); // No debe duplicar
     }
@@ -175,5 +180,6 @@ public class DatabaseSchemaTests : IDisposable
     public void Dispose()
     {
         _context.Dispose();
+        _connection.Dispose();
     }
 }

@@ -1,6 +1,6 @@
-<Window x:Class="CalculadoraHerreria.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CalculadoraHerreria.Views.MainWindow"
         Title="Calculadora de Herrería — Inventario y Cortes"
         Height="600" Width="900"
         WindowStartupLocation="CenterScreen">

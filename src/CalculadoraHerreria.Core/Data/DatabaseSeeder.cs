@@ -7,9 +7,37 @@ namespace CalculadoraHerreria.Data;
 /// </summary>
 public static class DatabaseSeeder
 {
-    public static void Seed(AppDbContext context)
+    public static void Seed(AppDbContext context, bool seedDemoData = false)
     {
-        // Solo sembrar si no hay materiales
+        // --- Configuraciones iniciales (Idempotente) ---
+        var configuracionesPorDefecto = new Dictionary<string, string>
+        {
+            { "UnidadPreferida", "mm" },
+            { "AnchoCorteDefault", "3" },
+            { "SobranteMinimoMm", "100" },
+            { "LargoBarraDefaultMm", "6000" },
+            { "VentanaCalculadora_X", "" },
+            { "VentanaCalculadora_Y", "" },
+            { "VentanaCalculadora_Ancho", "400" },
+            { "VentanaCalculadora_Alto", "500" },
+            { "VentanaCalculadora_SiempreVisible", "false" }
+        };
+
+        foreach (var kvp in configuracionesPorDefecto)
+        {
+            if (context.Configuraciones.Find(kvp.Key) == null)
+            {
+                context.Configuraciones.Add(new Configuracion { Clave = kvp.Key, Valor = kvp.Value });
+            }
+        }
+        
+        context.SaveChanges();
+
+        // Si no se solicitaron datos de demostración, salir aquí.
+        if (!seedDemoData)
+            return;
+
+        // Solo sembrar demo data si no hay materiales
         if (context.Materiales.Any())
             return;
 
@@ -101,22 +129,6 @@ public static class DatabaseSeeder
         };
 
         context.Materiales.AddRange(materiales);
-
-        // --- Configuraciones iniciales ---
-        var configs = new List<Configuracion>
-        {
-            new() { Clave = "UnidadPreferida", Valor = "mm" },
-            new() { Clave = "AnchoCorteDefault", Valor = "3" },
-            new() { Clave = "SobranteMinimoMm", Valor = "100" },
-            new() { Clave = "LargoBarraDefaultMm", Valor = "6000" },
-            new() { Clave = "VentanaCalculadora_X", Valor = "" },
-            new() { Clave = "VentanaCalculadora_Y", Valor = "" },
-            new() { Clave = "VentanaCalculadora_Ancho", Valor = "400" },
-            new() { Clave = "VentanaCalculadora_Alto", Valor = "500" },
-            new() { Clave = "VentanaCalculadora_SiempreVisible", Valor = "false" }
-        };
-
-        context.Configuraciones.AddRange(configs);
 
         // --- Plantilla de ejemplo (del plan: mesa básica) ---
         var plantilla = new Plantilla
