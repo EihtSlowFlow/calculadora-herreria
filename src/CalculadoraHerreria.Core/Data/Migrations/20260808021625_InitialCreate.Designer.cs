@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CalculadoraHerreria.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260808020559_InitialCreate")]
+    [Migration("20260808021625_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -193,7 +193,7 @@ namespace CalculadoraHerreria.Data.Migrations
                     b.HasOne("CalculadoraHerreria.Models.Material", "Material")
                         .WithMany()
                         .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Material");

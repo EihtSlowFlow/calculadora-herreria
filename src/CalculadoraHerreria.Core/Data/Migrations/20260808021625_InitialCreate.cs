@@ -84,7 +84,7 @@ namespace CalculadoraHerreria.Data.Migrations
                         column: x => x.MaterialId,
                         principalTable: "Materiales",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

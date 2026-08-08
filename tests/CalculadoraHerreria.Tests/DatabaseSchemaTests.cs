@@ -141,6 +141,24 @@ public class DatabaseSchemaTests : IDisposable
     }
 
     [Fact]
+    public void RechazaMovimientoConMaterialInexistente()
+    {
+        var movimiento = new Movimiento
+        {
+            MaterialId = 9999, // ID inexistente
+            Tipo = "Consumo",
+            CantidadAnterior = 1,
+            CantidadPosterior = 0,
+            Fecha = DateTime.Now
+        };
+
+        _context.Movimientos.Add(movimiento);
+
+        // SQLite debe lanzar una excepción de restricción de clave foránea
+        Assert.Throws<DbUpdateException>(() => _context.SaveChanges());
+    }
+
+    [Fact]
     public void PuedeGuardarYLeerConfiguracion()
     {
         var config = new Configuracion

@@ -190,7 +190,7 @@ namespace CalculadoraHerreria.Data.Migrations
                     b.HasOne("CalculadoraHerreria.Models.Material", "Material")
                         .WithMany()
                         .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Material");

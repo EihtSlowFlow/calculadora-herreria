@@ -80,5 +80,12 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<PlantillaPieza>()
             .HasIndex(p => p.PlantillaId);
+
+        // Evitar que al eliminar un material se eliminen sus movimientos en cascada
+        modelBuilder.Entity<Movimiento>()
+            .HasOne(m => m.Material)
+            .WithMany()
+            .HasForeignKey(m => m.MaterialId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
