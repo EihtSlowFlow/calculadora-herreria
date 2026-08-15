@@ -116,4 +116,18 @@ public class CorteSimpleServiceTests
         Assert.Throws<ArgumentException>(() =>
             CorteSimpleService.Calcular(6000, -1, 3));
     }
+
+    [Fact]
+    public void CantidadDeseadaNegativa_LanzaExcepcion()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            CorteSimpleService.Calcular(6000, 370, 3, cantidadDeseada: -40));
+    }
+
+    [Fact]
+    public void CantidadDeseadaCero_LanzaExcepcion()
+    {
+        Assert.Throws<ArgumentException>(() =>
+            CorteSimpleService.Calcular(6000, 370, 3, cantidadDeseada: 0));
+    }
 }

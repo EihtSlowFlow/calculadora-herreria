@@ -31,6 +31,8 @@ public static class CorteSimpleService
             throw new ArgumentException("El ancho de corte no puede ser negativo.", nameof(anchoCorte));
         if (margen < 0)
             throw new ArgumentException("El margen no puede ser negativo.", nameof(margen));
+        if (cantidadDeseada.HasValue && cantidadDeseada.Value <= 0)
+            throw new ArgumentException("La cantidad deseada debe ser mayor a 0.", nameof(cantidadDeseada));
 
         double piezaEfectiva = largoPieza + margen;
         double paso = piezaEfectiva + anchoCorte;

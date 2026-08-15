@@ -76,6 +76,125 @@ public class MaterialServiceTests : System.IDisposable
         Assert.Equal(2000000, chapas.First().AreaCalculada);
     }
 
+    [Fact]
+    public async Task AgregarMaterial_FamiliaInvalida_LanzaExcepcion()
+    {
+        var material = new Material
+        {
+            Nombre = "Test",
+            Familia = "foo",
+            Condicion = "Completa",
+            UnidadOriginal = "mm"
+        };
+
+        await Assert.ThrowsAsync<System.ArgumentException>(() =>
+            _service.AgregarMaterialAsync(material));
+    }
+
+    [Fact]
+    public async Task AgregarMaterial_CondicionInvalida_LanzaExcepcion()
+    {
+        var material = new Material
+        {
+            Nombre = "Test",
+            Familia = "Lineal",
+            Forma = "Planchuela",
+            Condicion = "Rota",
+            UnidadOriginal = "mm",
+            LargoDisponible = 6000
+        };
+
+        await Assert.ThrowsAsync<System.ArgumentException>(() =>
+            _service.AgregarMaterialAsync(material));
+    }
+
+    [Fact]
+    public async Task AgregarMaterial_UnidadInvalida_LanzaExcepcion()
+    {
+        var material = new Material
+        {
+            Nombre = "Test",
+            Familia = "Lineal",
+            Forma = "Planchuela",
+            Condicion = "Completa",
+            UnidadOriginal = "pies",
+            LargoDisponible = 6000
+        };
+
+        await Assert.ThrowsAsync<System.ArgumentException>(() =>
+            _service.AgregarMaterialAsync(material));
+    }
+
+    [Fact]
+    public async Task AgregarMaterial_CantidadNegativa_LanzaExcepcion()
+    {
+        var material = new Material
+        {
+            Nombre = "Test",
+            Familia = "Lineal",
+            Forma = "Planchuela",
+            Condicion = "Completa",
+            UnidadOriginal = "mm",
+            LargoDisponible = 6000,
+            Cantidad = -1
+        };
+
+        await Assert.ThrowsAsync<System.ArgumentException>(() =>
+            _service.AgregarMaterialAsync(material));
+    }
+
+    [Fact]
+    public async Task AgregarMaterial_FormaInvalidaParaLineal_LanzaExcepcion()
+    {
+        var material = new Material
+        {
+            Nombre = "Test",
+            Familia = "Lineal",
+            Forma = "Inexistente",
+            Condicion = "Completa",
+            UnidadOriginal = "mm",
+            LargoDisponible = 6000
+        };
+
+        await Assert.ThrowsAsync<System.ArgumentException>(() =>
+            _service.AgregarMaterialAsync(material));
+    }
+
+    [Fact]
+    public async Task AgregarMaterial_ChapasSinAncho_LanzaExcepcion()
+    {
+        var material = new Material
+        {
+            Nombre = "Chapa test",
+            Familia = "Chapa",
+            Condicion = "Completa",
+            UnidadOriginal = "mm",
+            LargoDisponible = 2000,
+            Ancho = null
+        };
+
+        await Assert.ThrowsAsync<System.ArgumentException>(() =>
+            _service.AgregarMaterialAsync(material));
+    }
+
+    [Fact]
+    public async Task AgregarMaterial_MaterialValido_SePersiste()
+    {
+        var material = new Material
+        {
+            Nombre = "Ángulo test",
+            Familia = "Lineal",
+            Forma = "Ángulo L",
+            Condicion = "Completa",
+            UnidadOriginal = "mm",
+            LargoDisponible = 6000,
+            Cantidad = 5
+        };
+
+        var result = await _service.AgregarMaterialAsync(material);
+        Assert.True(result.Id > 0);
+    }
+
     public void Dispose()
     {
         _context.Dispose();
